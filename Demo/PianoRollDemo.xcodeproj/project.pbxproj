@@ -11,8 +11,8 @@
 		2962749C2843053600D4736F /* PianoRoll in Frameworks */ = {isa = PBXBuildFile; productRef = 2962749B2843053600D4736F /* PianoRoll */; };
 		29F39D94280D311F00F01F83 /* PianoRollDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F39D84280D311E00F01F83 /* PianoRollDemoApp.swift */; };
 		29F39D95280D311F00F01F83 /* PianoRollDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F39D84280D311E00F01F83 /* PianoRollDemoApp.swift */; };
-		29F39D96280D311F00F01F83 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F39D85280D311E00F01F83 /* ContentView.swift */; };
-		29F39D97280D311F00F01F83 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F39D85280D311E00F01F83 /* ContentView.swift */; };
+		29F39D96280D311F00F01F83 /* PianoRollDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F39D85280D311E00F01F83 /* PianoRollDemoView.swift */; };
+		29F39D97280D311F00F01F83 /* PianoRollDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F39D85280D311E00F01F83 /* PianoRollDemoView.swift */; };
 		29F39D98280D311F00F01F83 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29F39D86280D311F00F01F83 /* Assets.xcassets */; };
 		29F39D99280D311F00F01F83 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29F39D86280D311F00F01F83 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -20,7 +20,7 @@
 /* Begin PBXFileReference section */
 		29627498284304D200D4736F /* PianoRoll */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = PianoRoll; path = ..; sourceTree = "<group>"; };
 		29F39D84280D311E00F01F83 /* PianoRollDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoRollDemoApp.swift; sourceTree = "<group>"; };
-		29F39D85280D311E00F01F83 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		29F39D85280D311E00F01F83 /* PianoRollDemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoRollDemoView.swift; sourceTree = "<group>"; };
 		29F39D86280D311F00F01F83 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		29F39D8B280D311F00F01F83 /* PianoRollDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PianoRollDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		29F39D91280D311F00F01F83 /* PianoRollDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PianoRollDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,7 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				29F39D84280D311E00F01F83 /* PianoRollDemoApp.swift */,
-				29F39D85280D311E00F01F83 /* ContentView.swift */,
+				29F39D85280D311E00F01F83 /* PianoRollDemoView.swift */,
 				29F39D86280D311F00F01F83 /* Assets.xcassets */,
 			);
 			path = Shared;
@@ -204,7 +204,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				29F39D96280D311F00F01F83 /* ContentView.swift in Sources */,
+				29F39D96280D311F00F01F83 /* PianoRollDemoView.swift in Sources */,
 				29F39D94280D311F00F01F83 /* PianoRollDemoApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -213,7 +213,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				29F39D97280D311F00F01F83 /* ContentView.swift in Sources */,
+				29F39D97280D311F00F01F83 /* PianoRollDemoView.swift in Sources */,
 				29F39D95280D311F00F01F83 /* PianoRollDemoApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

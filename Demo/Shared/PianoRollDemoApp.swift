@@ -6,7 +6,7 @@ import SwiftUI
 struct PianoRollDemoApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            PianoRollDemoView()
         }
     }
 }

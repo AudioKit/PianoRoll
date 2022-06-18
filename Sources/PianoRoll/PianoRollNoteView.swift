@@ -72,6 +72,9 @@ struct PianoRollNoteView: View {
         // the drag of a containing ScrollView.
         let minimumDistance: CGFloat = 2
 
+        // We don't want to actually update the data model until
+        // the drag is completed, so the entire drag is recorded
+        // as a single undo.
         let noteDragGesture = DragGesture(minimumDistance: minimumDistance)
             .updating($offset) { value, state, _ in
                 state = value.translation

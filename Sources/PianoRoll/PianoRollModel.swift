@@ -2,26 +2,6 @@
 
 import SwiftUI
 
-public struct PianoRollNote: Equatable, Identifiable {
-    public init(start: Double, length: Double, pitch: Int) {
-        self.start = start
-        self.length = length
-        self.pitch = pitch
-    }
-
-    public var id = UUID()
-
-    /// The start step.
-    var start: Double
-
-    /// How many steps long?
-    var length: Double
-
-    /// Abstract pitch, not MIDI notes.
-    var pitch: Int
-
-}
-
 /// Value oriented data model for `PianoRoll`
 ///
 /// The data model is abstracted away from MIDI so that it's up to you
@@ -41,5 +21,4 @@ public struct PianoRollModel: Equatable {
 
     /// Maximum pitch.
     var height: Int
-
 }

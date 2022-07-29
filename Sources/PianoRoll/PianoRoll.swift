@@ -54,16 +54,16 @@ public struct PianoRoll: View {
     }
 }
 
-public struct PianoRollTestView: View {
+struct PianoRollPreview: View {
 
-    public init() { }
+    init() { }
 
     @State var model = PianoRollModel(notes: [
         PianoRollNote(start: 1, length: 2, pitch: 3),
         PianoRollNote(start: 5, length: 1, pitch: 4)
     ], length: 128, height: 128)
 
-    public var body: some View {
+    var body: some View {
         ScrollView([.horizontal, .vertical], showsIndicators: true) {
             PianoRoll(model: $model, noteColor: .cyan)
         }.background(Color(white: 0.1))
@@ -72,6 +72,6 @@ public struct PianoRollTestView: View {
 
 struct PianoRoll_Previews: PreviewProvider {
     static var previews: some View {
-        PianoRollTestView()
+        PianoRollPreview()
     }
 }

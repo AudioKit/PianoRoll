@@ -4,7 +4,7 @@ Touch-oriented piano roll.
 
 ## Overview
 
-```Swift
+```
 import SwiftUI
 import PianoRoll
 

@@ -7,18 +7,24 @@ import SwiftUI
 /// The data model is abstracted away from MIDI so that it's up to you
 /// to determine what pitch means (e.g. how it is scale quantized).
 public struct PianoRollModel: Equatable {
+    
+    /// Initialize the PianoRollModel an array of PianoRollNotes, and dimensions
+    /// - Parameters:
+    ///   - notes: The sequence being edited
+    ///   - length: Duration in steps
+    ///   - height: The number of pitches represented
     public init(notes: [PianoRollNote], length: Int, height: Int) {
         self.notes = notes
         self.length = length
         self.height = height
     }
 
-    /// The sequence being edited.
+    /// The sequence being edited
     var notes: [PianoRollNote]
 
-    /// How many steps in the piano roll.
+    /// Duration in steps
     var length: Int
 
-    /// Maximum pitch.
+    /// The number of pitches represented
     var height: Int
 }

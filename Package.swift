@@ -8,3 +8,10 @@ let package = Package(
     products: [.library(name: "PianoRoll", targets: ["PianoRoll"])],
     targets: [.target(name: "PianoRoll", dependencies: [])]
 )
+
+#if swift(>=5.6)
+  // Add the documentation compiler plugin if possible
+  package.dependencies.append(
+    .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0")
+  )
+#endif

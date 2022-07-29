@@ -7,7 +7,7 @@ Touch oriented piano roll for iOS and macOS
 
 Documentation appears [here](https://swiftpackageindex.com/AudioKit/PianoRoll/main/documentation/pianoroll).
 
-You can also build documentation by choosing "Build Documentation" under the "Product" Menu in Xcode ()
+You can also build documentation by choosing "Build Documentation" under the "Product" Menu in Xcode.
 
 ## Demos
 

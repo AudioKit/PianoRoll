@@ -3,25 +3,12 @@ Touch oriented piano roll for iOS and macOS
 
 <img src="Sources/PianoRoll/PianoRoll.docc/Resources/screenshot.png" alt="piano roll screenshot" style="width:75%;">
 
-## Usage
+## Documentation
 
-```Swift
-import SwiftUI
-import PianoRoll
+Documentation appears [here](https://swiftpackageindex.com/AudioKit/PianoRoll/main/documentation/pianoroll).
 
-public struct PianoRollDemoView: View {
+You can also build documentation by choosing "Build Documentation" under the "Product" Menu in Xcode ()
 
-    public init() { }
+## Demo
 
-    @State var model = PianoRollModel(notes: [
-        PianoRollNote(start: 1, length: 2, pitch: 3),
-        PianoRollNote(start: 5, length: 1, pitch: 4)
-    ], length: 128, height: 128)
-
-    public var body: some View {
-        ScrollView([.horizontal, .vertical], showsIndicators: true) {
-            PianoRoll(model: $model, noteColor: .cyan)
-        }.background(Color(white: 0.1))
-    }
-}
-```
+The `Demo` directory contains project demos for iOS and macOS.

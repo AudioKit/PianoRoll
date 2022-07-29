@@ -11,6 +11,10 @@ public struct PianoRoll: View {
     var gridSize = CGSize(width: 80, height: 40)
     var noteColor = Color.accentColor
 
+    /// Initialize PianoRoll with a binding to a model and a color
+    /// - Parameters:
+    ///   - model: PianoRoll data
+    ///   - noteColor: Color to use for the note indicator, defaults to system accent color
     public init(model: Binding<PianoRollModel>, noteColor: Color = .accentColor) {
         _model = model
         self.noteColor = noteColor
@@ -18,6 +22,8 @@ public struct PianoRoll: View {
 
     let gridColor = Color(red: 15.0/255.0, green: 17.0/255.0, blue: 16.0/255.0)
 
+
+    /// SwiftUI view with grid and ability to add, delete and modify notes
     public var body: some View {
         ZStack(alignment: .topLeading) {
             let dragGesture = DragGesture(minimumDistance: 0).onEnded({ value in

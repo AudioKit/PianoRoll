@@ -1,12 +1,11 @@
-import SwiftUI
-import PlaygroundSupport
 import PianoRoll
+import PlaygroundSupport
+import SwiftUI
 
 struct PianoRollDemoView: View {
-
     @State var model = PianoRollModel(notes: [
         PianoRollNote(start: 1, length: 2, pitch: 9),
-        PianoRollNote(start: 5, length: 1, pitch: 4)
+        PianoRollNote(start: 5, length: 1, pitch: 4),
     ], length: 12, height: 12)
 
     public var body: some View {

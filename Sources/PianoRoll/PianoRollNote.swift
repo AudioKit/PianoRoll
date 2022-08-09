@@ -4,7 +4,6 @@ import SwiftUI
 
 /// Individual note displayed on the PianoRoll
 public struct PianoRollNote: Equatable, Identifiable {
-    
     /// Initialize the PianoRollNote with start time, duration, and pitch
     /// - Parameters:
     ///   - start: The start step
@@ -27,5 +26,4 @@ public struct PianoRollNote: Equatable, Identifiable {
 
     /// Abstract pitch, not MIDI notes.
     var pitch: Int
-
 }

@@ -1,15 +1,14 @@
 // Copyright AudioKit. All Rights Reserved. Revision History at http://github.com/AudioKit/AudioKitUI/
 
-import SwiftUI
 import PianoRoll
+import SwiftUI
 
 public struct PianoRollDemoView: View {
-
-    public init() { }
+    public init() {}
 
     @State var model = PianoRollModel(notes: [
         PianoRollNote(start: 1, length: 2, pitch: 3),
-        PianoRollNote(start: 5, length: 1, pitch: 4)
+        PianoRollNote(start: 5, length: 1, pitch: 4),
     ], length: 128, height: 128)
 
     public var body: some View {

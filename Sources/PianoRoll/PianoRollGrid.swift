@@ -7,13 +7,11 @@ import SwiftUI
 /// We tried using Canvas but because a piano roll grid can be very large when inside a scroll
 /// view, Canvas allocates too big of a texture for rendering.
 struct PianoRollGrid: Shape {
-
     var gridSize: CGSize
     var length: Int
     var height: Int
 
     func path(in rect: CGRect) -> Path {
-
         let size = rect.size
         var path = Path()
         for column in 0 ... length {

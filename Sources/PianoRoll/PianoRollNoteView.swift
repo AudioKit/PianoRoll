@@ -57,7 +57,6 @@ struct PianoRollNoteView: View {
     }
 
     var body: some View {
-
         // While dragging, show where the note will go.
         if offset != CGSize.zero {
             Rectangle()
@@ -84,7 +83,7 @@ struct PianoRollNoteView: View {
                     state = note
                 }
             }
-            .onChanged{ value in
+            .onChanged { value in
                 if let startNote = startNote {
                     note = snap(note: startNote, offset: value.translation)
                 }
@@ -94,14 +93,14 @@ struct PianoRollNoteView: View {
             .updating($lengthOffset) { value, state, _ in
                 state = value.translation.width
             }
-            .onEnded{ value in
+            .onEnded { value in
                 note = snap(note: note, offset: CGSize.zero, lengthOffset: value.translation.width)
             }
 
         // Main note body.
         ZStack(alignment: .trailing) {
             Rectangle()
-                .foregroundColor(color.opacity( (hovering || offset != .zero || lengthOffset != 0) ? 1.0 : 0.8))
+                .foregroundColor(color.opacity((hovering || offset != .zero || lengthOffset != 0) ? 1.0 : 0.8))
             Rectangle()
                 .foregroundColor(.black)
                 .padding(4)
@@ -115,7 +114,7 @@ struct PianoRollNoteView: View {
             .gesture(noteDragGesture)
 
         // Length tab at the end of the note.
-        HStack() {
+        HStack {
             Spacer()
             Rectangle()
                 .foregroundColor(.white.opacity(0.001))
@@ -125,6 +124,5 @@ struct PianoRollNoteView: View {
         .frame(width: gridSize.width * CGFloat(note.length),
                height: gridSize.height)
         .offset(noteOffset(note: note, dragOffset: offset))
-
     }
 }

@@ -4,6 +4,10 @@ Touch-oriented piano roll.
 
 ## Overview
 
+Code is hosted on Github: [](https://github.com/AudioKit/PianoRoll/)
+
+![Screenshot](screenshot)
+
 ```swift
 import SwiftUI
 import PianoRoll
@@ -22,7 +26,5 @@ struct PianoRollDemoView: View {
     }
 }
 ```
-
-![Screenshot](screenshot)
 
 Note: Requires macOS 12 / iOS 15 due to SwiftUI bug (crashes in SwiftUI when deleting notes). 

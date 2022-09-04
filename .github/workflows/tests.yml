@@ -13,6 +13,7 @@ jobs:
     uses: AudioKit/ci/.github/workflows/swift_test.yml@main
     with:
       scheme: PianoRoll
+      subcommand: build
       platforms: iOS macOS
       swift-versions: 5.5 5.6
 

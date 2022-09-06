@@ -1,7 +1,7 @@
 # PianoRoll
 Touch oriented piano roll for iOS and macOS
 
-<img src="Sources/PianoRoll/PianoRoll.docc/Resources/screenshot.png" alt="piano roll screenshot" style="width:75%;">
+![piano-roll-demo](https://user-images.githubusercontent.com/13122/188531653-d8abebeb-9ca6-4e00-ac5e-07e45a380acd.png)
 
 ## Documentation
 

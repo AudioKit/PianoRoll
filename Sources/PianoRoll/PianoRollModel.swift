@@ -11,7 +11,7 @@ public struct PianoRollModel: Equatable {
     /// - Parameters:
     ///   - notes: The sequence being edited
     ///   - length: Duration in steps
-    ///   - height: The number of pitches represented
+    ///   - height: The number of pitches representable
     public init(notes: [PianoRollNote], length: Int, height: Int) {
         self.notes = notes
         self.length = length

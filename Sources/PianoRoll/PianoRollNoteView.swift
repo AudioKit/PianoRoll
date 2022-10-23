@@ -27,6 +27,7 @@ struct PianoRollNoteView: View {
     var sequenceLength: Int
     var sequenceHeight: Int
     var isContinuous = false
+    var readOnly: Bool = false
 
     func snap(note: PianoRollNote, offset: CGSize, lengthOffset: CGFloat = 0.0) -> PianoRollNote {
         var n = note
@@ -105,13 +106,14 @@ struct PianoRollNoteView: View {
                 .foregroundColor(.black)
                 .padding(4)
                 .frame(width: 10)
+                .opacity(readOnly ? 0 : 1)
         }
             .onHover { over in hovering = over }
             .padding(1) // so we can see consecutive notes
             .frame(width: max(gridSize.width, gridSize.width * CGFloat(note.length) + lengthOffset),
                    height: gridSize.height)
             .offset( noteOffset(note: startNote ?? note, dragOffset: offset))
-            .gesture(noteDragGesture)
+            .gesture(readOnly ? nil : noteDragGesture)
 
         // Length tab at the end of the note.
         HStack {
@@ -119,7 +121,7 @@ struct PianoRollNoteView: View {
             Rectangle()
                 .foregroundColor(.white.opacity(0.001))
                 .frame(width: gridSize.width * 0.5, height: gridSize.height)
-                .gesture(lengthDragGesture)
+                .gesture(readOnly ? nil : lengthDragGesture)
         }
         .frame(width: gridSize.width * CGFloat(note.length),
                height: gridSize.height)

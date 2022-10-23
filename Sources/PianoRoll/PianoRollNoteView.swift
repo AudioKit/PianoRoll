@@ -110,8 +110,11 @@ struct PianoRollNoteView: View {
             .padding(1) // so we can see consecutive notes
             .frame(width: max(gridSize.width, gridSize.width * CGFloat(note.length) + lengthOffset),
                    height: gridSize.height)
-            .offset( noteOffset(note: startNote ?? note, dragOffset: offset))
+            .offset(noteOffset(note: startNote ?? note, dragOffset: offset))
             .gesture(noteDragGesture)
+            .preference(key: NoteOffsetsKey.self,
+                        value: [NoteOffsetInfo(offset: noteOffset(note: startNote ?? note, dragOffset: offset),
+                                               noteId: note.id)])
 
         // Length tab at the end of the note.
         HStack {

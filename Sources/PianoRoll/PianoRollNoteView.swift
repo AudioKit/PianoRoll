@@ -28,6 +28,10 @@ struct PianoRollNoteView: View {
     var sequenceHeight: Int
     var isContinuous = false
 
+    var noteColor: Color {
+        note.color ?? color
+    }
+
     func snap(note: PianoRollNote, offset: CGSize, lengthOffset: CGFloat = 0.0) -> PianoRollNote {
         var n = note
         if isContinuous {
@@ -100,7 +104,7 @@ struct PianoRollNoteView: View {
         // Main note body.
         ZStack(alignment: .trailing) {
             Rectangle()
-                .foregroundColor(color.opacity((hovering || offset != .zero || lengthOffset != 0) ? 1.0 : 0.8))
+                .foregroundColor(noteColor.opacity((hovering || offset != .zero || lengthOffset != 0) ? 1.0 : 0.8))
             Rectangle()
                 .foregroundColor(.black)
                 .padding(4)

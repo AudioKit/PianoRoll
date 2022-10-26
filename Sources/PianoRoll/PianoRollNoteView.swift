@@ -28,6 +28,7 @@ struct PianoRollNoteView: View {
     var sequenceHeight: Int
     var isContinuous = false
     var readOnly: Bool = false
+    var lineOpacity: Double = 1
 
     var noteColor: Color {
         note.color ?? color
@@ -110,7 +111,7 @@ struct PianoRollNoteView: View {
                 .foregroundColor(.black)
                 .padding(4)
                 .frame(width: 10)
-                .opacity(readOnly ? 0 : 1)
+                .opacity(lineOpacity)
         }
             .onHover { over in hovering = over }
             .padding(1) // so we can see consecutive notes

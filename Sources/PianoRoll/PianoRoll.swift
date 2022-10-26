@@ -11,21 +11,28 @@ public struct PianoRoll: View {
     var noteColor: Color
     var gridColor: Color
     var readOnly: Bool
+    var noteLineOpacity: Double
 
 
     /// Initialize PianoRoll with a binding to a model and a color
     /// - Parameters:
     ///   - model: PianoRoll data
     ///   - noteColor: Color to use for the note indicator, defaults to system accent color
+    ///   - noteLineOpacity: Opacity of the note view vertical black line
+    ///   - gridSize: Size of a grid cell
+    ///   - gridColor: Color of grid
+    ///   - readOnly: Disable addition, modification and deletion of any note in piano roll
     public init(
         model: Binding<PianoRollModel>,
         noteColor: Color = .accentColor,
+        noteLineOpacity: Double = 1,
         gridSize: CGSize = CGSize(width: 80, height: 40),
         gridColor: Color = Color(red: 15.0 / 255.0, green: 17.0 / 255.0, blue: 16.0 / 255.0),
         readOnly: Bool = false
     ) {
         _model = model
         self.noteColor = noteColor
+        self.noteLineOpacity = noteLineOpacity
         self.gridSize = gridSize
         self.gridColor = gridColor
         self.readOnly = readOnly
@@ -54,7 +61,8 @@ public struct PianoRoll: View {
                     sequenceLength: model.length,
                     sequenceHeight: model.height,
                     isContinuous: true,
-                    readOnly: readOnly
+                    readOnly: readOnly,
+                    lineOpacity: noteLineOpacity
                 )
                 .onTapGesture {
                     if readOnly { return }

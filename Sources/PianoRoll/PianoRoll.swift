@@ -7,9 +7,11 @@ import SwiftUI
 /// Note: Requires macOS 12 / iOS 15 due to SwiftUI bug (crashes in SwiftUI when deleting notes).
 public struct PianoRoll: View {
     @Binding var model: PianoRollModel
-    var gridSize = CGSize(width: 80, height: 40)
-    var noteColor = Color.accentColor
-    var readOnly: Bool = false
+    var gridSize: CGSize
+    var noteColor: Color
+    var gridColor: Color
+    var readOnly: Bool
+
 
     /// Initialize PianoRoll with a binding to a model and a color
     /// - Parameters:
@@ -18,14 +20,17 @@ public struct PianoRoll: View {
     public init(
         model: Binding<PianoRollModel>,
         noteColor: Color = .accentColor,
+        gridSize: CGSize = CGSize(width: 80, height: 40),
+        gridColor: Color = Color(red: 15.0 / 255.0, green: 17.0 / 255.0, blue: 16.0 / 255.0),
         readOnly: Bool = false
     ) {
         _model = model
         self.noteColor = noteColor
+        self.gridSize = gridSize
+        self.gridColor = gridColor
         self.readOnly = readOnly
     }
 
-    let gridColor = Color(red: 15.0 / 255.0, green: 17.0 / 255.0, blue: 16.0 / 255.0)
 
     /// SwiftUI view with grid and ability to add, delete and modify notes
     public var body: some View {

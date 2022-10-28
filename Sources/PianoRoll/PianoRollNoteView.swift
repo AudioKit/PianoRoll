@@ -105,8 +105,13 @@ struct PianoRollNoteView: View {
 
         // Main note body.
         ZStack(alignment: .trailing) {
-            Rectangle()
-                .foregroundColor(noteColor.opacity((hovering || offset != .zero || lengthOffset != 0) ? 1.0 : 0.8))
+            ZStack(alignment: .leading) {
+                Rectangle()
+                    .foregroundColor(noteColor.opacity((hovering || offset != .zero || lengthOffset != 0) ? 1.0 : 0.8))
+                Text(note.text ?? "")
+                    .opacity(note.text == nil ? 0 : 1)
+                    .padding(.leading, 5)
+            }
             Rectangle()
                 .foregroundColor(.black)
                 .padding(4)

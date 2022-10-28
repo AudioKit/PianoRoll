@@ -10,11 +10,13 @@ public struct PianoRollNote: Equatable, Identifiable {
     ///   - start: The start step
     ///   - length: Duration, measured in steps
     ///   - pitch: Abstract pitch, not MIDI notes.
-    public init(color: Color? = nil, start: Double, length: Double, pitch: Int) {
+    ///   - text: Optional text shown on the note view.
+    public init(color: Color? = nil, start: Double, length: Double, pitch: Int, text: String? = nil) {
         self.color = color
         self.start = start
         self.length = length
         self.pitch = pitch
+        self.text = text
     }
 
     /// Unique Identifier
@@ -31,4 +33,7 @@ public struct PianoRollNote: Equatable, Identifiable {
 
     /// Abstract pitch, not MIDI notes.
     var pitch: Int
+
+    /// Optional text shown on the note view
+    var text: String?
 }

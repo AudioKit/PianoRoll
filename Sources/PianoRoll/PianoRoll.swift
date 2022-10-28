@@ -7,24 +7,35 @@ import SwiftUI
 /// Note: Requires macOS 12 / iOS 15 due to SwiftUI bug (crashes in SwiftUI when deleting notes).
 public struct PianoRoll: View {
     @Binding var model: PianoRollModel
+    var editable: Bool
+    var gridColor: Color
     var gridSize: CGSize
     var noteColor: Color
-    var gridColor: Color
+    var noteLineOpacity: Double
+
 
     /// Initialize PianoRoll with a binding to a model and a color
     /// - Parameters:
+    ///   - editable: Disable edition of any note in piano roll
     ///   - model: PianoRoll data
     ///   - noteColor: Color to use for the note indicator, defaults to system accent color
+    ///   - noteLineOpacity: Opacity of the note view vertical black line
+    ///   - gridColor: Color of grid
+    ///   - gridSize: Size of a grid cell
     public init(
+        editable: Bool = true,
         model: Binding<PianoRollModel>,
         noteColor: Color = .accentColor,
-        gridSize: CGSize = CGSize(width: 80, height: 40),
-        gridColor: Color = Color(red: 15.0 / 255.0, green: 17.0 / 255.0, blue: 16.0 / 255.0)
+        noteLineOpacity: Double = 1,
+        gridColor: Color = Color(red: 15.0 / 255.0, green: 17.0 / 255.0, blue: 16.0 / 255.0),
+        gridSize: CGSize = CGSize(width: 80, height: 40)
     ) {
         _model = model
         self.noteColor = noteColor
+        self.noteLineOpacity = noteLineOpacity
         self.gridSize = gridSize
         self.gridColor = gridColor
+        self.editable = editable
     }
 
 
@@ -41,7 +52,7 @@ public struct PianoRoll: View {
                 .stroke(lineWidth: 0.5)
                 .foregroundColor(gridColor)
                 .contentShape(Rectangle())
-                .gesture(TapGesture().sequenced(before: dragGesture))
+                .gesture(editable ? TapGesture().sequenced(before: dragGesture) : nil)
             ForEach(model.notes) { note in
                 PianoRollNoteView(
                     note: $model.notes[model.notes.firstIndex(of: note)!],
@@ -49,9 +60,12 @@ public struct PianoRoll: View {
                     color: noteColor,
                     sequenceLength: model.length,
                     sequenceHeight: model.height,
-                    isContinuous: true
+                    isContinuous: true,
+                    editable: editable,
+                    lineOpacity: noteLineOpacity
                 )
                 .onTapGesture {
+                    guard editable else { return }
                     model.notes.removeAll(where: { $0 == note })
                 }
             }

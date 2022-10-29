@@ -124,6 +124,9 @@ struct PianoRollNoteView: View {
                    height: gridSize.height)
             .offset(noteOffset(note: startNote ?? note, dragOffset: offset))
             .gesture(editable ? noteDragGesture : nil)
+            .preference(key: NoteOffsetsKey.self,
+                        value: [NoteOffsetInfo(offset: noteOffset(note: startNote ?? note, dragOffset: offset),
+                                               noteId: note.id)])
 
         // Length tab at the end of the note.
         HStack {

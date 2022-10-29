@@ -27,6 +27,12 @@ struct PianoRollNoteView: View {
     var sequenceLength: Int
     var sequenceHeight: Int
     var isContinuous = false
+    var editable: Bool = false
+    var lineOpacity: Double = 1
+
+    var noteColor: Color {
+        note.color ?? color
+    }
 
     func snap(note: PianoRollNote, offset: CGSize, lengthOffset: CGFloat = 0.0) -> PianoRollNote {
         var n = note
@@ -99,19 +105,25 @@ struct PianoRollNoteView: View {
 
         // Main note body.
         ZStack(alignment: .trailing) {
-            Rectangle()
-                .foregroundColor(color.opacity((hovering || offset != .zero || lengthOffset != 0) ? 1.0 : 0.8))
+            ZStack(alignment: .leading) {
+                Rectangle()
+                    .foregroundColor(noteColor.opacity((hovering || offset != .zero || lengthOffset != 0) ? 1.0 : 0.8))
+                Text(note.text ?? "")
+                    .opacity(note.text == nil ? 0 : 1)
+                    .padding(.leading, 5)
+            }
             Rectangle()
                 .foregroundColor(.black)
                 .padding(4)
                 .frame(width: 10)
+                .opacity(editable ? lineOpacity : 0)
         }
             .onHover { over in hovering = over }
             .padding(1) // so we can see consecutive notes
             .frame(width: max(gridSize.width, gridSize.width * CGFloat(note.length) + lengthOffset),
                    height: gridSize.height)
             .offset(noteOffset(note: startNote ?? note, dragOffset: offset))
-            .gesture(noteDragGesture)
+            .gesture(editable ? noteDragGesture : nil)
             .preference(key: NoteOffsetsKey.self,
                         value: [NoteOffsetInfo(offset: noteOffset(note: startNote ?? note, dragOffset: offset),
                                                noteId: note.id)])
@@ -122,7 +134,7 @@ struct PianoRollNoteView: View {
             Rectangle()
                 .foregroundColor(.white.opacity(0.001))
                 .frame(width: gridSize.width * 0.5, height: gridSize.height)
-                .gesture(lengthDragGesture)
+                .gesture(editable ? lengthDragGesture : nil)
         }
         .frame(width: gridSize.width * CGFloat(note.length),
                height: gridSize.height)

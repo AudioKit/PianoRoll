@@ -23,17 +23,17 @@ public struct PianoRollNote: Equatable, Identifiable {
     public var id = UUID()
 
     /// Individual note color. It will default to `noteColor` in `PianoRoll` if not set.
-    var color: Color?
+    public var color: Color?
 
     /// The start step
-    var start: Double
+    public var start: Double
 
     /// Duration, measured in steps
-    var length: Double
+    public var length: Double
 
     /// Abstract pitch, not MIDI notes.
-    var pitch: Int
+    public var pitch: Int
 
     /// Optional text shown on the note view
-    var text: String?
+    public var text: String?
 }

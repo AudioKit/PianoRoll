@@ -41,16 +41,17 @@ struct VerticalPianoRollNoteView: View {
         } else {
             n.start += round(offset.height / CGFloat(gridSize.width))
         }
-        n.start = max(0, n.start)
-        n.start = min(Double(sequenceLength - 1), n.start)
         n.pitch -= Int(round(offset.width / CGFloat(gridSize.height)))
         n.pitch = max(1, n.pitch)
         n.pitch = min(sequenceHeight, n.pitch)
         if isContinuous {
             n.length += lengthOffset / gridSize.width
+            n.start -= lengthOffset / gridSize.width
         } else {
             n.length += round(lengthOffset / gridSize.width)
         }
+        n.start = max(0, n.start)
+        n.start = min(Double(sequenceLength - 1), n.start)
         n.length = max(1, n.length)
         n.length = min(Double(sequenceLength), n.length)
         n.length = min(Double(sequenceLength) - n.start, n.length)
@@ -58,8 +59,8 @@ struct VerticalPianoRollNoteView: View {
     }
 
     func noteOffset(note: PianoRollNote, dragOffset: CGSize = .zero) -> CGSize {
-        CGSize(width: gridSize.height * CGFloat(sequenceHeight - note.pitch) + dragOffset.width,
-               height: gridSize.width * CGFloat(note.start) + dragOffset.height)
+        CGSize(width: gridSize.height * CGFloat(note.pitch - 1) + dragOffset.width,
+               height: gridSize.width * CGFloat(Double(sequenceLength) - note.start - note.length) + dragOffset.height)
     }
 
     var body: some View {
@@ -91,7 +92,10 @@ struct VerticalPianoRollNoteView: View {
             }
             .onChanged { value in
                 if let startNote = startNote {
-                    note = snap(note: startNote, offset: value.translation)
+                    note = snap(
+                        note: startNote,
+                        offset: .init(width: -value.translation.width, height: -value.translation.height)
+                    )
                 }
             }
 

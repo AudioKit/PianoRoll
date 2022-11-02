@@ -35,27 +35,27 @@ struct VerticalPianoRollNoteView: View {
     }
 
     func snap(note: PianoRollNote, offset: CGSize, lengthOffset: CGFloat = 0.0) -> PianoRollNote {
-        var n = note
+        var note = note
         if isContinuous {
-            n.start += offset.height / gridSize.width
+            note.start += offset.height / gridSize.width
         } else {
-            n.start += round(offset.height / CGFloat(gridSize.width))
+            note.start += round(offset.height / CGFloat(gridSize.width))
         }
-        n.pitch -= Int(round(offset.width / CGFloat(gridSize.height)))
-        n.pitch = max(1, n.pitch)
-        n.pitch = min(sequenceHeight, n.pitch)
+        note.pitch -= Int(round(offset.width / CGFloat(gridSize.height)))
+        note.pitch = max(1, note.pitch)
+        note.pitch = min(sequenceHeight, note.pitch)
         if isContinuous {
-            n.length += lengthOffset / gridSize.width
-            n.start -= lengthOffset / gridSize.width
+            note.length += lengthOffset / gridSize.width
+            note.start -= lengthOffset / gridSize.width
         } else {
-            n.length += round(lengthOffset / gridSize.width)
+            note.length += round(lengthOffset / gridSize.width)
         }
-        n.start = max(0, n.start)
-        n.start = min(Double(sequenceLength - 1), n.start)
-        n.length = max(1, n.length)
-        n.length = min(Double(sequenceLength), n.length)
-        n.length = min(Double(sequenceLength) - n.start, n.length)
-        return n
+        note.start = max(0, note.start)
+        note.start = min(Double(sequenceLength - 1), note.start)
+        note.length = max(1, note.length)
+        note.length = min(Double(sequenceLength), note.length)
+        note.length = min(Double(sequenceLength) - note.start, note.length)
+        return note
     }
 
     func noteOffset(note: PianoRollNote, dragOffset: CGSize = .zero) -> CGSize {
@@ -85,7 +85,7 @@ struct VerticalPianoRollNoteView: View {
             .updating($offset) { value, state, _ in
                 state = value.translation
             }
-            .updating($startNote){ value, state, _ in
+            .updating($startNote) { _, state, _ in
                 if state == nil {
                     state = note
                 }
@@ -136,7 +136,7 @@ struct VerticalPianoRollNoteView: View {
         VStack {
             Spacer()
             Rectangle()
-                .foregroundColor(.green.opacity(0.5))
+                .foregroundColor(.white.opacity(0.001))
                 .frame(width: gridSize.height, height: gridSize.width * 0.5)
                 .gesture(editable ? heightDragGesture : nil)
 

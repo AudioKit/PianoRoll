@@ -18,17 +18,17 @@ struct PianoRollGrid: Shape {
 
         func drawHorizontal(count: Int, width: CGFloat) {
             for column in 0 ... count {
-                let x = CGFloat(column) * width
-                path.move(to: CGPoint(x: x, y: 0))
-                path.addLine(to: CGPoint(x: x, y: size.height))
+                let anchor = CGFloat(column) * width
+                path.move(to: CGPoint(x: anchor, y: 0))
+                path.addLine(to: CGPoint(x: anchor, y: size.height))
             }
         }
 
         func drawVertical(count: Int, height: CGFloat) {
             for row in 0 ... count {
-                let y = CGFloat(row) * height
-                path.move(to: CGPoint(x: 0, y: y))
-                path.addLine(to: CGPoint(x: size.width, y: y))
+                let anchor = CGFloat(row) * height
+                path.move(to: CGPoint(x: 0, y: anchor))
+                path.addLine(to: CGPoint(x: size.width, y: anchor))
             }
         }
 

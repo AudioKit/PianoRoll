@@ -13,7 +13,7 @@ public struct PianoRollDemoView: View {
 
     public var body: some View {
         ScrollView([.horizontal, .vertical], showsIndicators: true) {
-            PianoRoll(model: $model, noteColor: .cyan)
+            PianoRoll(model: $model, noteColor: .cyan, layout: .vertical)
         }.background(Color(white: 0.1))
     }
 }

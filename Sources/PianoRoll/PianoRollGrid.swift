@@ -10,20 +10,35 @@ struct PianoRollGrid: Shape {
     var gridSize: CGSize
     var length: Int
     var height: Int
+    var layout: PianoRoll.Layout
 
     func path(in rect: CGRect) -> Path {
         let size = rect.size
         var path = Path()
-        for column in 0 ... length {
-            let x = CGFloat(column) * gridSize.width
-            path.move(to: CGPoint(x: x, y: 0))
-            path.addLine(to: CGPoint(x: x, y: size.height))
+
+        func drawHorizontal(count: Int, width: CGFloat) {
+            for column in 0 ... count {
+                let x = CGFloat(column) * width
+                path.move(to: CGPoint(x: x, y: 0))
+                path.addLine(to: CGPoint(x: x, y: size.height))
+            }
         }
 
-        for row in 0 ... height {
-            let y = CGFloat(row) * gridSize.height
-            path.move(to: CGPoint(x: 0, y: y))
-            path.addLine(to: CGPoint(x: size.width, y: y))
+        func drawVertical(count: Int, height: CGFloat) {
+            for row in 0 ... count {
+                let y = CGFloat(row) * height
+                path.move(to: CGPoint(x: 0, y: y))
+                path.addLine(to: CGPoint(x: size.width, y: y))
+            }
+        }
+
+        switch layout {
+        case .horizontal:
+            drawHorizontal(count: length, width: gridSize.width)
+            drawVertical(count: height, height: gridSize.height)
+        case .vertical:
+            drawHorizontal(count: height, width: gridSize.height)
+            drawVertical(count: length, height: gridSize.width)
         }
 
         return path

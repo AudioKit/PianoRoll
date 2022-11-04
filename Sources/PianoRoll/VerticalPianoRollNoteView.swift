@@ -8,7 +8,7 @@ import SwiftUI
 ///
 /// With each note as a separate view this might not be suitable for very large sequences, but
 /// it makes it easier to implement.
-struct PianoRollNoteView: View {
+struct VerticalPianoRollNoteView: View {
     @Binding var note: PianoRollNote
     var gridSize: CGSize
     var color: Color
@@ -22,7 +22,7 @@ struct PianoRollNoteView: View {
 
     // Note: using @GestureState instead of @State here fixes a bug where the
     //       lengthOffset could get stuck when inside a ScrollView.
-    @GestureState var lengthOffset: CGFloat = 0
+    @GestureState var heightOffset: CGFloat = 0
 
     var sequenceLength: Int
     var sequenceHeight: Int
@@ -35,31 +35,32 @@ struct PianoRollNoteView: View {
     }
 
     func snap(note: PianoRollNote, offset: CGSize, lengthOffset: CGFloat = 0.0) -> PianoRollNote {
-        var n = note
+        var note = note
         if isContinuous {
-            n.start += offset.width / gridSize.width
+            note.start += offset.height / gridSize.width
         } else {
-            n.start += round(offset.width / CGFloat(gridSize.width))
+            note.start += round(offset.height / CGFloat(gridSize.width))
         }
-        n.start = max(0, n.start)
-        n.start = min(Double(sequenceLength - 1), n.start)
-        n.pitch -= Int(round(offset.height / CGFloat(gridSize.height)))
-        n.pitch = max(1, n.pitch)
-        n.pitch = min(sequenceHeight, n.pitch)
+        note.pitch -= Int(round(offset.width / CGFloat(gridSize.height)))
+        note.pitch = max(1, note.pitch)
+        note.pitch = min(sequenceHeight, note.pitch)
         if isContinuous {
-            n.length += lengthOffset / gridSize.width
+            note.length += lengthOffset / gridSize.width
+            note.start -= lengthOffset / gridSize.width
         } else {
-            n.length += round(lengthOffset / gridSize.width)
+            note.length += round(lengthOffset / gridSize.width)
         }
-        n.length = max(1, n.length)
-        n.length = min(Double(sequenceLength), n.length)
-        n.length = min(Double(sequenceLength) - n.start, n.length)
-        return n
+        note.start = max(0, note.start)
+        note.start = min(Double(sequenceLength - 1), note.start)
+        note.length = max(1, note.length)
+        note.length = min(Double(sequenceLength), note.length)
+        note.length = min(Double(sequenceLength) - note.start, note.length)
+        return note
     }
 
     func noteOffset(note: PianoRollNote, dragOffset: CGSize = .zero) -> CGSize {
-        CGSize(width: gridSize.width * CGFloat(note.start) + dragOffset.width,
-               height: gridSize.height * CGFloat(sequenceHeight - note.pitch) + dragOffset.height)
+        CGSize(width: gridSize.height * CGFloat(note.pitch - 1) + dragOffset.width,
+               height: gridSize.width * CGFloat(Double(sequenceLength) - note.start - note.length) + dragOffset.height)
     }
 
     var body: some View {
@@ -67,8 +68,8 @@ struct PianoRollNoteView: View {
         if offset != CGSize.zero {
             Rectangle()
                 .foregroundColor(.black.opacity(0.2))
-                .frame(width: gridSize.width * CGFloat(note.length),
-                       height: gridSize.height)
+                .frame(width: gridSize.height,
+                       height: gridSize.width * CGFloat(note.length))
                 .offset(noteOffset(note: note))
                 .zIndex(-1)
         }
@@ -84,44 +85,47 @@ struct PianoRollNoteView: View {
             .updating($offset) { value, state, _ in
                 state = value.translation
             }
-            .updating($startNote){ value, state, _ in
+            .updating($startNote) { _, state, _ in
                 if state == nil {
                     state = note
                 }
             }
             .onChanged { value in
                 if let startNote = startNote {
-                    note = snap(note: startNote, offset: value.translation)
+                    note = snap(
+                        note: startNote,
+                        offset: .init(width: -value.translation.width, height: -value.translation.height)
+                    )
                 }
             }
 
-        let lengthDragGesture = DragGesture(minimumDistance: minimumDistance)
-            .updating($lengthOffset) { value, state, _ in
-                state = value.translation.width
+        let heightDragGesture = DragGesture(minimumDistance: minimumDistance)
+            .updating($heightOffset) { value, state, _ in
+                state = value.translation.height
             }
             .onEnded { value in
-                note = snap(note: note, offset: CGSize.zero, lengthOffset: value.translation.width)
+                note = snap(note: note, offset: CGSize.zero, lengthOffset: value.translation.height)
             }
 
         // Main note body.
-        ZStack(alignment: .trailing) {
-            ZStack(alignment: .leading) {
+        ZStack(alignment: .bottom) {
+            ZStack(alignment: .bottom) {
                 Rectangle()
-                    .foregroundColor(noteColor.opacity((hovering || offset != .zero || lengthOffset != 0) ? 1.0 : 0.8))
+                    .foregroundColor(noteColor.opacity((hovering || offset != .zero || heightOffset != 0) ? 1.0 : 0.8))
                 Text(note.text ?? "")
                     .opacity(note.text == nil ? 0 : 1)
-                    .padding(.leading, 5)
+                    .padding(.bottom, 5)
             }
             Rectangle()
                 .foregroundColor(.black)
                 .padding(4)
-                .frame(width: 10)
+                .frame(height: 10)
                 .opacity(editable ? lineOpacity : 0)
         }
             .onHover { over in hovering = over }
             .padding(1) // so we can see consecutive notes
-            .frame(width: max(gridSize.width, gridSize.width * CGFloat(note.length) + lengthOffset),
-                   height: gridSize.height)
+            .frame(width: gridSize.height,
+                   height: max(gridSize.width, gridSize.width * CGFloat(note.length) + heightOffset))
             .offset(noteOffset(note: startNote ?? note, dragOffset: offset))
             .gesture(editable ? noteDragGesture : nil)
             .preference(key: NoteOffsetsKey.self,
@@ -129,15 +133,16 @@ struct PianoRollNoteView: View {
                                                noteId: note.id)])
 
         // Length tab at the end of the note.
-        HStack {
+        VStack {
             Spacer()
             Rectangle()
                 .foregroundColor(.white.opacity(0.001))
-                .frame(width: gridSize.width * 0.5, height: gridSize.height)
-                .gesture(editable ? lengthDragGesture : nil)
+                .frame(width: gridSize.height, height: gridSize.width * 0.5)
+                .gesture(editable ? heightDragGesture : nil)
+
         }
-        .frame(width: gridSize.width * CGFloat(note.length),
-               height: gridSize.height)
+        .frame(width: gridSize.height,
+               height: gridSize.width * CGFloat(note.length))
         .offset(noteOffset(note: note, dragOffset: offset))
     }
 }

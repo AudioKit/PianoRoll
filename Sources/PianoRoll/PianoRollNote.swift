@@ -6,24 +6,21 @@ import SwiftUI
 public struct PianoRollNote: Equatable, Identifiable {
     /// Initialize the PianoRollNote with start time, duration, and pitch
     /// - Parameters:
-    ///   - color: Individual note color. It will default to `noteColor` in `PianoRoll` if not set.
     ///   - start: The start step
     ///   - length: Duration, measured in steps
     ///   - pitch: Abstract pitch, not MIDI notes.
     ///   - text: Optional text shown on the note view.
-    public init(color: Color? = nil, start: Double, length: Double, pitch: Int, text: String? = nil) {
-        self.color = color
+    ///   - color: Individual note color. It will default to `noteColor` in `PianoRoll` if not set.
+    public init(start: Double, length: Double, pitch: Int, text: String? = nil, color: Color? = nil) {
         self.start = start
         self.length = length
         self.pitch = pitch
         self.text = text
+        self.color = color
     }
 
     /// Unique Identifier
     public var id = UUID()
-
-    /// Individual note color. It will default to `noteColor` in `PianoRoll` if not set.
-    public var color: Color?
 
     /// The start step
     public var start: Double
@@ -36,4 +33,7 @@ public struct PianoRollNote: Equatable, Identifiable {
 
     /// Optional text shown on the note view
     public var text: String?
+
+    /// Individual note color. It will default to `noteColor` in `PianoRoll` if not set.
+    public var color: Color?
 }

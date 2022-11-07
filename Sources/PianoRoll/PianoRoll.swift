@@ -63,15 +63,15 @@ public struct PianoRoll: View {
                 case .horizontal:
                     let step = Double(Int(location.x / gridSize.width))
                     let pitch = model.height - Int(location.y / gridSize.height)
-                    note = PianoRollNote(color: noteColor, start: step, length: 1, pitch: pitch)
+                    note = PianoRollNote(start: step, length: 1, pitch: pitch, color: noteColor)
                 case .vertical:
                     let step = Double(Int(location.y / gridSize.width))
                     let pitch = Int(location.x / gridSize.height)
                     note = PianoRollNote(
-                        color: noteColor,
                         start: Double(model.length) - step - 1,
                         length: 1,
-                        pitch: pitch + 1
+                        pitch: pitch + 1,
+                        color: noteColor
                     )
                 }
                 model.notes.append(note)

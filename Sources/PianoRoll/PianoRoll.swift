@@ -81,11 +81,11 @@ public struct PianoRoll: View {
                 .foregroundColor(gridColor)
                 .contentShape(Rectangle())
                 .gesture(editable ? TapGesture().sequenced(before: dragGesture) : nil)
-            ForEach(model.notes) { note in
+            ForEach($model.notes) { $note in
                 switch layout {
                 case .horizontal:
                     PianoRollNoteView(
-                        note: $model.notes[model.notes.firstIndex(of: note)!],
+                        note: $note,
                         gridSize: gridSize,
                         color: noteColor,
                         sequenceLength: model.length,
@@ -100,7 +100,7 @@ public struct PianoRoll: View {
 
                 case .vertical:
                     VerticalPianoRollNoteView(
-                        note: $model.notes[model.notes.firstIndex(of: note)!],
+                        note: $note,
                         gridSize: gridSize,
                         color: noteColor,
                         sequenceLength: model.length,

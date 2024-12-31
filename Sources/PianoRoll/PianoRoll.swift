@@ -6,7 +6,7 @@ import SwiftUI
 ///
 /// Note: Requires macOS 12 / iOS 15 due to SwiftUI bug (crashes in SwiftUI when deleting notes).
 public struct PianoRoll: View {
-    public enum Layout {
+    public enum Layout: Sendable {
         case horizontal
         case vertical
     }

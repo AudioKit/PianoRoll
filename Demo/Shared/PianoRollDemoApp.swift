@@ -7,6 +7,7 @@ struct PianoRollDemoApp: App {
     var body: some Scene {
         WindowGroup {
             PianoRollDemoView()
+                .frame(minWidth: 600, minHeight: 500)
         }
     }
 }

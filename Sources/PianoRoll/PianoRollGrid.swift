@@ -10,7 +10,7 @@ struct PianoRollGrid: Shape {
     var gridSize: CGSize
     var length: Int
     var height: Int
-    var layout: PianoRoll.Layout
+    var layout: PianoRollLayout
 
     func path(in rect: CGRect) -> Path {
         let size = rect.size

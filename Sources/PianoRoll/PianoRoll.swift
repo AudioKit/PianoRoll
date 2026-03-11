@@ -2,14 +2,17 @@
 
 import SwiftUI
 
+/// Layout orientation for the piano roll.
+public enum PianoRollLayout: Sendable {
+    case horizontal
+    case vertical
+}
+
 /// Touch-oriented piano roll.
 ///
 /// Note: Requires macOS 12 / iOS 15 due to SwiftUI bug (crashes in SwiftUI when deleting notes).
-public struct PianoRoll: View {
-    public enum Layout: Sendable {
-        case horizontal
-        case vertical
-    }
+public struct PianoRoll<NoteContent: View>: View {
+    public typealias Layout = PianoRollLayout
 
     @Binding var model: PianoRollModel
     var editable: Bool
@@ -17,9 +20,10 @@ public struct PianoRoll: View {
     var gridSize: CGSize
     var noteColor: Color
     var noteLineOpacity: Double
-    var layout: Layout
+    var layout: PianoRollLayout
+    var noteContent: (PianoRollNote, Bool) -> NoteContent
 
-    /// Initialize PianoRoll with a binding to a model and a color
+    /// Initialize PianoRoll with a binding to a model, a color, and a custom note view builder
     /// - Parameters:
     ///   - editable: Disable edition of any note in piano roll
     ///   - model: PianoRoll data
@@ -27,6 +31,8 @@ public struct PianoRoll: View {
     ///   - noteLineOpacity: Opacity of the note view vertical black line
     ///   - gridColor: Color of grid
     ///   - gridSize: Size of a grid cell
+    ///   - layout: Horizontal or vertical layout
+    ///   - noteContent: Custom view builder for note appearance. Receives the note and whether it is active (hovering/dragging).
     public init(
         editable: Bool = true,
         model: Binding<PianoRollModel>,
@@ -34,7 +40,8 @@ public struct PianoRoll: View {
         noteLineOpacity: Double = 1,
         gridColor: Color = Color(red: 15.0 / 255.0, green: 17.0 / 255.0, blue: 16.0 / 255.0),
         gridSize: CGSize = CGSize(width: 80, height: 40),
-        layout: Layout = .horizontal
+        layout: PianoRollLayout = .horizontal,
+        @ViewBuilder noteContent: @escaping (PianoRollNote, Bool) -> NoteContent
     ) {
         _model = model
         self.noteColor = noteColor
@@ -43,6 +50,7 @@ public struct PianoRoll: View {
         self.gridColor = gridColor
         self.editable = editable
         self.layout = layout
+        self.noteContent = noteContent
     }
 
     private var width: CGFloat {
@@ -92,7 +100,7 @@ public struct PianoRoll: View {
                         sequenceHeight: model.height,
                         isContinuous: true,
                         editable: editable,
-                        lineOpacity: noteLineOpacity
+                        noteContent: noteContent
                     ).onTapGesture {
                         guard editable else { return }
                         model.notes.removeAll(where: { $0 == note })
@@ -107,7 +115,7 @@ public struct PianoRoll: View {
                         sequenceHeight: model.height,
                         isContinuous: true,
                         editable: editable,
-                        lineOpacity: noteLineOpacity
+                        noteContent: noteContent
                     ).onTapGesture {
                         guard editable else { return }
                         model.notes.removeAll(where: { $0 == note })
@@ -116,6 +124,37 @@ public struct PianoRoll: View {
             }
         }.frame(width: layout == .horizontal ? width : height,
                 height: layout == .horizontal ? height : width)
+    }
+}
+
+/// Backward-compatible initializer that uses the default note appearance.
+extension PianoRoll where NoteContent == DefaultNoteView {
+    public init(
+        editable: Bool = true,
+        model: Binding<PianoRollModel>,
+        noteColor: Color = .accentColor,
+        noteLineOpacity: Double = 1,
+        gridColor: Color = Color(red: 15.0 / 255.0, green: 17.0 / 255.0, blue: 16.0 / 255.0),
+        gridSize: CGSize = CGSize(width: 80, height: 40),
+        layout: PianoRollLayout = .horizontal
+    ) {
+        self.init(
+            editable: editable,
+            model: model,
+            noteColor: noteColor,
+            noteLineOpacity: noteLineOpacity,
+            gridColor: gridColor,
+            gridSize: gridSize,
+            layout: layout
+        ) { note, isActive in
+            DefaultNoteView(
+                note: note,
+                color: noteColor,
+                isActive: isActive,
+                lineOpacity: editable ? noteLineOpacity : 0,
+                layout: layout
+            )
+        }
     }
 }
 

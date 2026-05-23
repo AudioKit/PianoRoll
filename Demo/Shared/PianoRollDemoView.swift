@@ -17,6 +17,17 @@ public struct PianoRollDemoView: View {
         .yellow, .green, .mint, .cyan,
     ]
 
+    static func pianoKeyRowBackground(pitch: Int) -> Color? {
+        let pitchClass = (pitch - 1) % 12
+        if [1, 3, 6, 8, 10].contains(pitchClass) {
+            return .black.opacity(0.22)
+        }
+        if pitchClass == 0 {
+            return .white.opacity(0.12)
+        }
+        return nil
+    }
+
     @State var customModel = PianoRollModel(notes: [
         PianoRollNote(start: 0, length: 2, pitch: 3, text: "C"),
         PianoRollNote(start: 2, length: 2, pitch: 5, text: "E"),
@@ -35,12 +46,22 @@ public struct PianoRollDemoView: View {
         VStack(spacing: 20) {
             Text("Default Note Style")
             ScrollView([.horizontal, .vertical], showsIndicators: true) {
-                PianoRoll(model: $model, noteColor: .cyan, layout: .horizontal)
+                PianoRoll(
+                    model: $model,
+                    noteColor: .cyan,
+                    layout: .horizontal,
+                    rowBackgroundColor: Self.pianoKeyRowBackground
+                )
             }.background(Color(white: 0.4))
 
             Text("Custom Neon Pill Notes")
             ScrollView([.horizontal, .vertical], showsIndicators: true) {
-                PianoRoll(model: $customModel, noteColor: .cyan, layout: .horizontal) { note, isActive in
+                PianoRoll(
+                    model: $customModel,
+                    noteColor: .cyan,
+                    layout: .horizontal,
+                    rowBackgroundColor: Self.pianoKeyRowBackground
+                ) { note, isActive in
                     let color = Self.pitchColors[(note.pitch - 1) % Self.pitchColors.count]
                     ZStack {
                         RoundedRectangle(cornerRadius: 12)

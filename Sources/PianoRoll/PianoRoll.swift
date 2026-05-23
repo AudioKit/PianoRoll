@@ -21,6 +21,7 @@ public struct PianoRoll<NoteContent: View>: View {
     var noteColor: Color
     var noteLineOpacity: Double
     var layout: PianoRollLayout
+    var rowBackgroundColor: (Int) -> Color?
     var noteContent: (PianoRollNote, Bool) -> NoteContent
 
     /// Initialize PianoRoll with a binding to a model, a color, and a custom note view builder
@@ -32,6 +33,7 @@ public struct PianoRoll<NoteContent: View>: View {
     ///   - gridColor: Color of grid
     ///   - gridSize: Size of a grid cell
     ///   - layout: Horizontal or vertical layout
+    ///   - rowBackgroundColor: Color for a pitch row, or nil to leave it transparent. The pitch is 1-based.
     ///   - noteContent: Custom view builder for note appearance. Receives the note and whether it is active (hovering/dragging).
     public init(
         editable: Bool = true,
@@ -41,6 +43,7 @@ public struct PianoRoll<NoteContent: View>: View {
         gridColor: Color = Color(red: 15.0 / 255.0, green: 17.0 / 255.0, blue: 16.0 / 255.0),
         gridSize: CGSize = CGSize(width: 80, height: 40),
         layout: PianoRollLayout = .horizontal,
+        rowBackgroundColor: @escaping (Int) -> Color? = { _ in nil },
         @ViewBuilder noteContent: @escaping (PianoRollNote, Bool) -> NoteContent
     ) {
         _model = model
@@ -50,6 +53,7 @@ public struct PianoRoll<NoteContent: View>: View {
         self.gridColor = gridColor
         self.editable = editable
         self.layout = layout
+        self.rowBackgroundColor = rowBackgroundColor
         self.noteContent = noteContent
     }
 
@@ -84,6 +88,14 @@ public struct PianoRoll<NoteContent: View>: View {
                 }
                 model.notes.append(note)
             }
+            PianoRollRowBackground(
+                gridSize: gridSize,
+                length: model.length,
+                height: model.height,
+                layout: layout,
+                rowBackgroundColor: rowBackgroundColor
+            )
+                .allowsHitTesting(false)
             PianoRollGrid(gridSize: gridSize, length: model.length, height: model.height, layout: layout)
                 .stroke(lineWidth: 0.5)
                 .foregroundColor(gridColor)
@@ -136,7 +148,8 @@ extension PianoRoll where NoteContent == DefaultNoteView {
         noteLineOpacity: Double = 1,
         gridColor: Color = Color(red: 15.0 / 255.0, green: 17.0 / 255.0, blue: 16.0 / 255.0),
         gridSize: CGSize = CGSize(width: 80, height: 40),
-        layout: PianoRollLayout = .horizontal
+        layout: PianoRollLayout = .horizontal,
+        rowBackgroundColor: @escaping (Int) -> Color? = { _ in nil }
     ) {
         self.init(
             editable: editable,
@@ -145,7 +158,8 @@ extension PianoRoll where NoteContent == DefaultNoteView {
             noteLineOpacity: noteLineOpacity,
             gridColor: gridColor,
             gridSize: gridSize,
-            layout: layout
+            layout: layout,
+            rowBackgroundColor: rowBackgroundColor
         ) { note, isActive in
             DefaultNoteView(
                 note: note,

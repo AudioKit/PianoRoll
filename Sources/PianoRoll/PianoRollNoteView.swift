@@ -28,6 +28,9 @@ struct PianoRollNoteView<NoteContent: View>: View {
     var sequenceHeight: Int
     var isContinuous = false
     var editable: Bool = false
+    /// Width of the trailing drag handle used to change a note's length.
+    /// `nil` keeps the default of half a grid column.
+    var resizeHandleLength: CGFloat? = nil
     var noteContent: (PianoRollNote, Bool) -> NoteContent
 
     var isActive: Bool {
@@ -36,6 +39,10 @@ struct PianoRollNoteView<NoteContent: View>: View {
 
     var noteColor: Color {
         note.color ?? color
+    }
+
+    private var lengthHandleWidth: CGFloat {
+        resizeHandleLength ?? gridSize.width * 0.5
     }
 
     func snap(note: PianoRollNote, offset: CGSize, lengthOffset: CGFloat = 0.0) -> PianoRollNote {
@@ -124,7 +131,7 @@ struct PianoRollNoteView<NoteContent: View>: View {
             Spacer()
             Rectangle()
                 .foregroundColor(.white.opacity(0.001))
-                .frame(width: gridSize.width * 0.5, height: gridSize.height)
+                .frame(width: lengthHandleWidth, height: gridSize.height)
                 .gesture(editable ? lengthDragGesture : nil)
         }
         .frame(width: gridSize.width * CGFloat(note.length),

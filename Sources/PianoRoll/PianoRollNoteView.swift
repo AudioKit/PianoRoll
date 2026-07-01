@@ -16,7 +16,6 @@ struct PianoRollNoteView<NoteContent: View>: View {
     // Note: using @GestureState instead of @State here fixes a bug where the
     //       offset could get stuck when inside a ScrollView.
     @GestureState var offset = CGSize.zero
-    @GestureState var startNote: PianoRollNote?
 
     @State var hovering = false
 
@@ -74,39 +73,23 @@ struct PianoRollNoteView<NoteContent: View>: View {
     }
 
     var body: some View {
-        // While dragging, show where the note will go.
-        if offset != CGSize.zero {
-            Rectangle()
-                .foregroundColor(.black.opacity(0.2))
-                .frame(width: gridSize.width * CGFloat(note.length),
-                       height: gridSize.height)
-                .offset(noteOffset(note: note))
-                .zIndex(-1)
-        }
+        // The minimum distance a note drag needs before it starts: high enough
+        // that a tap-to-delete with slight finger movement isn't misread as a
+        // drag, while still overriding the drag of a containing ScrollView.
+        let minimumDistance: CGFloat = 8
 
-        // Set the minimum distance so a note drag will override
-        // the drag of a containing ScrollView.
-        let minimumDistance: CGFloat = 2
-
-        // We don't want to actually update the data model until
-        // the drag is completed, so the entire drag is recorded
-        // as a single undo.
+        // The model is only written when the drag completes, so the entire
+        // drag is a single model change (and a single undo step). While the
+        // drag is in flight the note is rendered from local gesture state.
         let noteDragGesture = DragGesture(minimumDistance: minimumDistance)
             .updating($offset) { value, state, _ in
                 state = value.translation
             }
-            .updating($startNote){ value, state, _ in
-                if state == nil {
-                    state = note
-                }
-            }
-            .onChanged { value in
-                if let startNote = startNote {
-                    note = snap(note: startNote, offset: value.translation)
-                }
+            .onEnded { value in
+                note = snap(note: note, offset: value.translation)
             }
 
-        let lengthDragGesture = DragGesture(minimumDistance: minimumDistance)
+        let lengthDragGesture = DragGesture(minimumDistance: 2)
             .updating($lengthOffset) { value, state, _ in
                 state = value.translation.width
             }
@@ -114,28 +97,41 @@ struct PianoRollNoteView<NoteContent: View>: View {
                 note = snap(note: note, offset: CGSize.zero, lengthOffset: value.translation.width)
             }
 
-        // Main note body.
-        noteContent(note, isActive)
-            .onHover { over in hovering = over }
-            .padding(1) // so we can see consecutive notes
-            .frame(width: max(gridSize.width, gridSize.width * CGFloat(note.length) + lengthOffset),
-                   height: gridSize.height)
-            .offset(noteOffset(note: startNote ?? note, dragOffset: offset))
-            .gesture(editable ? noteDragGesture : nil)
-            .preference(key: NoteOffsetsKey.self,
-                        value: [NoteOffsetInfo(offset: noteOffset(note: startNote ?? note, dragOffset: offset),
-                                               noteId: note.id)])
-
-        // Length tab at the end of the note.
-        HStack {
-            Spacer()
+        // Single root container so each ForEach element keeps a constant view
+        // count; conditional children here made SwiftUI re-evaluate every note
+        // body whenever any note changed.
+        ZStack(alignment: .topLeading) {
+            // While dragging, show where the note will land.
             Rectangle()
-                .foregroundColor(.white.opacity(0.001))
-                .frame(width: lengthHandleWidth, height: gridSize.height)
-                .gesture(editable ? lengthDragGesture : nil)
+                .foregroundColor(.black.opacity(offset == .zero ? 0 : 0.2))
+                .frame(width: gridSize.width * CGFloat(note.length),
+                       height: gridSize.height)
+                .offset(noteOffset(note: snap(note: note, offset: offset)))
+                .zIndex(-1)
+
+            // Main note body.
+            noteContent(note, isActive)
+                .onHover { over in hovering = over }
+                .padding(1) // so we can see consecutive notes
+                .frame(width: max(gridSize.width, gridSize.width * CGFloat(note.length) + lengthOffset),
+                       height: gridSize.height)
+                .offset(noteOffset(note: note, dragOffset: offset))
+                .gesture(editable ? noteDragGesture : nil)
+                .preference(key: NoteOffsetsKey.self,
+                            value: [NoteOffsetInfo(offset: noteOffset(note: note, dragOffset: offset),
+                                                   noteId: note.id)])
+
+            // Length tab at the end of the note.
+            HStack {
+                Spacer()
+                Rectangle()
+                    .foregroundColor(.white.opacity(0.001))
+                    .frame(width: lengthHandleWidth, height: gridSize.height)
+                    .gesture(editable ? lengthDragGesture : nil)
+            }
+            .frame(width: gridSize.width * CGFloat(note.length),
+                   height: gridSize.height)
+            .offset(noteOffset(note: note, dragOffset: offset))
         }
-        .frame(width: gridSize.width * CGFloat(note.length),
-               height: gridSize.height)
-        .offset(noteOffset(note: note, dragOffset: offset))
     }
 }

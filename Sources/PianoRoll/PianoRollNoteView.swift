@@ -41,7 +41,10 @@ struct PianoRollNoteView<NoteContent: View>: View {
     }
 
     private var lengthHandleWidth: CGFloat {
-        resizeHandleLength ?? gridSize.width * 0.5
+        // Never let the handle cover more than half the note, so short notes
+        // keep a grabbable area for moving.
+        min(resizeHandleLength ?? gridSize.width * 0.5,
+            gridSize.width * CGFloat(note.length) * 0.5)
     }
 
     func snap(note: PianoRollNote, offset: CGSize, lengthOffset: CGFloat = 0.0) -> PianoRollNote {

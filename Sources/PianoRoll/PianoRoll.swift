@@ -74,9 +74,6 @@ public struct PianoRoll<NoteContent: View>: View {
     /// SwiftUI view with grid and ability to add, delete and modify notes
     public var body: some View {
         ZStack(alignment: .topLeading) {
-            // A plain spatial tap adds a note. The previous
-            // TapGesture().sequenced(before: DragGesture(minimumDistance: 0))
-            // hack silently failed whenever the finger drifted a few points.
             let addNoteGesture = SpatialTapGesture().onEnded { value in
                 let location = value.location
                 var note: PianoRollNote

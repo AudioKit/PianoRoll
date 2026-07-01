@@ -41,10 +41,10 @@ struct VerticalPianoRollNoteView<NoteContent: View>: View {
     }
 
     private var lengthHandleHeight: CGFloat {
-        // Never let the handle cover more than half the note, so short notes
-        // keep a grabbable area for moving.
-        min(resizeHandleLength ?? gridSize.width * 0.5,
-            gridSize.width * CGFloat(note.length) * 0.5)
+        let noteHeight = gridSize.width * CGFloat(note.length)
+        let requestedHeight = resizeHandleLength ?? gridSize.width * 0.5
+        // The other half of the note stays grabbable for moving.
+        return min(requestedHeight, noteHeight * 0.5)
     }
 
     func snap(note: PianoRollNote, offset: CGSize, lengthOffset: CGFloat = 0.0) -> PianoRollNote {
@@ -77,15 +77,12 @@ struct VerticalPianoRollNoteView<NoteContent: View>: View {
     }
 
     var body: some View {
-        // The minimum distance a note drag needs before it starts: high enough
-        // that a tap-to-delete with slight finger movement isn't misread as a
-        // drag, while still overriding the drag of a containing ScrollView.
-        let minimumDistance: CGFloat = 8
+        // Below this distance a touch stays a tap (delete) or a scroll.
+        let dragActivationDistance: CGFloat = 8
 
-        // The model is only written when the drag completes, so the entire
-        // drag is a single model change (and a single undo step). While the
-        // drag is in flight the note is rendered from local gesture state.
-        let noteDragGesture = DragGesture(minimumDistance: minimumDistance)
+        // The drag renders from local gesture state and writes the model once,
+        // on end, so the whole drag is a single model change and undo step.
+        let noteDragGesture = DragGesture(minimumDistance: dragActivationDistance)
             .updating($offset) { value, state, _ in
                 state = value.translation
             }
@@ -104,11 +101,10 @@ struct VerticalPianoRollNoteView<NoteContent: View>: View {
                 note = snap(note: note, offset: CGSize.zero, lengthOffset: value.translation.height)
             }
 
-        // Single root container so each ForEach element keeps a constant view
-        // count; conditional children here made SwiftUI re-evaluate every note
-        // body whenever any note changed.
+        // Constant view count per note: a conditional child here makes SwiftUI
+        // re-evaluate every note body whenever any note changes.
         ZStack(alignment: .topLeading) {
-            // While dragging, show where the note will land.
+            // Drop-target preview while dragging.
             Rectangle()
                 .foregroundColor(.black.opacity(offset == .zero ? 0 : 0.2))
                 .frame(width: gridSize.height,

@@ -22,6 +22,9 @@ public struct PianoRoll<NoteContent: View>: View {
     var noteLineOpacity: Double
     var layout: PianoRollLayout
     var rowBackgroundColor: (Int) -> Color?
+    /// Length of the trailing drag handle used to resize a note (width in a horizontal
+    /// layout, height in a vertical one). `nil` keeps the default of half a grid column.
+    var resizeHandleLength: CGFloat?
     var noteContent: (PianoRollNote, Bool) -> NoteContent
 
     /// Initialize PianoRoll with a binding to a model, a color, and a custom note view builder
@@ -34,6 +37,7 @@ public struct PianoRoll<NoteContent: View>: View {
     ///   - gridSize: Size of a grid cell
     ///   - layout: Horizontal or vertical layout
     ///   - rowBackgroundColor: Color for a pitch row, or nil to leave it transparent. The pitch is 1-based.
+    ///   - resizeHandleLength: Length of the trailing drag handle used to resize a note. `nil` (default) uses half a grid column.
     ///   - noteContent: Custom view builder for note appearance. Receives the note and whether it is active (hovering/dragging).
     public init(
         editable: Bool = true,
@@ -44,6 +48,7 @@ public struct PianoRoll<NoteContent: View>: View {
         gridSize: CGSize = CGSize(width: 80, height: 40),
         layout: PianoRollLayout = .horizontal,
         rowBackgroundColor: @escaping (Int) -> Color? = { _ in nil },
+        resizeHandleLength: CGFloat? = nil,
         @ViewBuilder noteContent: @escaping (PianoRollNote, Bool) -> NoteContent
     ) {
         _model = model
@@ -54,6 +59,7 @@ public struct PianoRoll<NoteContent: View>: View {
         self.editable = editable
         self.layout = layout
         self.rowBackgroundColor = rowBackgroundColor
+        self.resizeHandleLength = resizeHandleLength
         self.noteContent = noteContent
     }
 
@@ -68,7 +74,7 @@ public struct PianoRoll<NoteContent: View>: View {
     /// SwiftUI view with grid and ability to add, delete and modify notes
     public var body: some View {
         ZStack(alignment: .topLeading) {
-            let dragGesture = DragGesture(minimumDistance: 0).onEnded { value in
+            let addNoteGesture = SpatialTapGesture().onEnded { value in
                 let location = value.location
                 var note: PianoRollNote
                 switch layout {
@@ -100,7 +106,7 @@ public struct PianoRoll<NoteContent: View>: View {
                 .stroke(lineWidth: 0.5)
                 .foregroundColor(gridColor)
                 .contentShape(Rectangle())
-                .gesture(editable ? TapGesture().sequenced(before: dragGesture) : nil)
+                .gesture(editable ? addNoteGesture : nil)
             ForEach($model.notes) { $note in
                 switch layout {
                 case .horizontal:
@@ -112,6 +118,7 @@ public struct PianoRoll<NoteContent: View>: View {
                         sequenceHeight: model.height,
                         isContinuous: true,
                         editable: editable,
+                        resizeHandleLength: resizeHandleLength,
                         noteContent: noteContent
                     ).onTapGesture {
                         guard editable else { return }
@@ -127,6 +134,7 @@ public struct PianoRoll<NoteContent: View>: View {
                         sequenceHeight: model.height,
                         isContinuous: true,
                         editable: editable,
+                        resizeHandleLength: resizeHandleLength,
                         noteContent: noteContent
                     ).onTapGesture {
                         guard editable else { return }
@@ -149,7 +157,8 @@ extension PianoRoll where NoteContent == DefaultNoteView {
         gridColor: Color = Color(red: 15.0 / 255.0, green: 17.0 / 255.0, blue: 16.0 / 255.0),
         gridSize: CGSize = CGSize(width: 80, height: 40),
         layout: PianoRollLayout = .horizontal,
-        rowBackgroundColor: @escaping (Int) -> Color? = { _ in nil }
+        rowBackgroundColor: @escaping (Int) -> Color? = { _ in nil },
+        resizeHandleLength: CGFloat? = nil
     ) {
         self.init(
             editable: editable,
@@ -159,7 +168,8 @@ extension PianoRoll where NoteContent == DefaultNoteView {
             gridColor: gridColor,
             gridSize: gridSize,
             layout: layout,
-            rowBackgroundColor: rowBackgroundColor
+            rowBackgroundColor: rowBackgroundColor,
+            resizeHandleLength: resizeHandleLength
         ) { note, isActive in
             DefaultNoteView(
                 note: note,
